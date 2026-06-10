@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { ScratchCard } from './components/ScratchCard';
 import { InvitationDetails } from './components/InvitationDetails';
 import { RSVPModal } from './components/RSVPModal';
-// @ts-ignore
-import bgImage from '../../birthday-shop.webp';
+const bgImage = '/birthday-shop.webp';
 
 declare global {
   interface Window {

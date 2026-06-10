@@ -966,6 +966,10 @@ body {
     min-height: 100vh !important;
     overflow-y: auto !important;
   }
+  .app-container.is-revealed .content-wrapper {
+    height: auto !important;
+    min-height: 100vh !important;
+  }
   .app-container.is-revealed .main-panel {
     display: flex !important;
     flex-direction: column !important;
