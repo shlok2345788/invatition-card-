@@ -32,23 +32,115 @@ export const ScratchCard = ({ children, onReveal }: ScratchCardProps) => {
       const width = canvas.width;
       const height = canvas.height;
       
-      // Create metallic/holographic gradient
-      const gradient = ctx.createLinearGradient(0, 0, width, height);
-      gradient.addColorStop(0, '#e6e6fa'); // Light lavender
-      gradient.addColorStop(0.2, '#c0c0c0'); // Silver
-      gradient.addColorStop(0.5, '#ffd700'); // Gold accent
-      gradient.addColorStop(0.8, '#c0c0c0'); // Silver
-      gradient.addColorStop(1, '#ffb6c1'); // Light pink
-
-      ctx.fillStyle = gradient;
+      // Base luxury dark card background
+      ctx.fillStyle = '#0f0f1c';
       ctx.fillRect(0, 0, width, height);
 
-      // Add a scratch instruction text
-      ctx.font = "bold 24px 'Outfit', sans-serif";
-      ctx.fillStyle = "#333";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("Scratch to Reveal!", width / 2, height / 2);
+      // Gold pattern overlay (diagonal grid lines)
+      ctx.strokeStyle = 'rgba(218, 165, 32, 0.04)';
+      ctx.lineWidth = 1.5;
+      for (let i = -width; i < width + height; i += 25) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + height, height);
+        ctx.stroke();
+      }
+
+      // Draw premium gold borders
+      ctx.strokeStyle = 'rgba(255, 215, 0, 0.35)';
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(18, 18, width - 36, height - 36);
+      
+      ctx.strokeStyle = 'rgba(255, 215, 0, 0.12)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(24, 24, width - 48, height - 48);
+
+      // Draw outer gold corner frames
+      ctx.strokeStyle = 'rgba(255, 215, 0, 0.55)';
+      ctx.lineWidth = 2;
+      // top-left
+      ctx.beginPath(); ctx.moveTo(42, 24); ctx.lineTo(24, 24); ctx.lineTo(24, 42); ctx.stroke();
+      // top-right
+      ctx.beginPath(); ctx.moveTo(width - 42, 24); ctx.lineTo(width - 24, 24); ctx.lineTo(width - 24, 42); ctx.stroke();
+      // bottom-left
+      ctx.beginPath(); ctx.moveTo(42, height - 24); ctx.lineTo(24, height - 24); ctx.lineTo(24, height - 42); ctx.stroke();
+      // bottom-right
+      ctx.beginPath(); ctx.moveTo(width - 42, height - 24); ctx.lineTo(width - 24, height - 24); ctx.lineTo(width - 24, height - 42); ctx.stroke();
+
+      // Central Golden Emblem
+      const centerX = width / 2;
+      const centerY = height / 2;
+      
+      // Shadow for emblem depth
+      ctx.shadowColor = 'rgba(255, 20, 147, 0.45)';
+      ctx.shadowBlur = 18;
+
+      // Outer glowing gradient ring
+      const ringGrad = ctx.createRadialGradient(centerX, centerY, 60, centerX, centerY, 80);
+      ringGrad.addColorStop(0, 'rgba(255, 20, 147, 0.6)');
+      ringGrad.addColorStop(1, 'rgba(138, 43, 226, 0.05)');
+      ctx.fillStyle = ringGrad;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 80, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.shadowBlur = 0; // Reset shadows
+
+      // Gold Coin Base
+      const goldGrad = ctx.createLinearGradient(centerX - 60, centerY - 60, centerX + 60, centerY + 60);
+      goldGrad.addColorStop(0, '#ffd700');
+      goldGrad.addColorStop(0.3, '#fff8dc');
+      goldGrad.addColorStop(0.6, '#daa520');
+      goldGrad.addColorStop(1, '#ffd700');
+      
+      ctx.fillStyle = goldGrad;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 58, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Inner Coin Border
+      ctx.strokeStyle = '#8b6508';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 52, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Coin text "21"
+      ctx.font = "900 40px 'Outfit', sans-serif";
+      ctx.fillStyle = '#4a3b00';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText("21", centerX, centerY - 6);
+
+      ctx.font = "800 9px 'Outfit', sans-serif";
+      ctx.fillText("YEARS OLD", centerX, centerY + 18);
+
+      // Gold text tags
+      ctx.fillStyle = '#ffd700';
+      ctx.font = "800 15px 'Outfit', sans-serif";
+      ctx.fillText("RAHUL'S EXCLUSIVE", centerX, centerY - 95);
+      ctx.font = "800 12px 'Outfit', sans-serif";
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.fillText("BIRTHDAY PARTY PASS", centerX, centerY - 78);
+
+      // Scratch instructions button banner
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.strokeStyle = 'rgba(0, 255, 255, 0.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      
+      // Fallback rounded rect draw for older browsers (Vite environments standard supports roundRect)
+      if (typeof (ctx as any).roundRect === 'function') {
+        (ctx as any).roundRect(centerX - 120, centerY + 100, 240, 36, 18);
+      } else {
+        ctx.rect(centerX - 120, centerY + 100, 240, 36);
+      }
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = "800 11px 'Outfit', sans-serif";
+      ctx.fillStyle = '#00ffff';
+      ctx.fillText("⚡ SCRATCH TO ACTIVATE VIP ACCESS ⚡", centerX, centerY + 118);
     };
 
     resizeCanvas();

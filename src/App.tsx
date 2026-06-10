@@ -60,8 +60,12 @@ function App() {
         className="bg-image" 
         style={{ backgroundImage: `url(${bgImage})` }}
       ></div>
+      <div className="grid-overlay"></div>
+      <div className="noise-filter"></div>
       <div className="ambient-light cursor-light"></div>
       <div className="ambient-light-2"></div>
+      <div className="ambient-light-3"></div>
+      <div className="ambient-light-4"></div>
       <div className="bokeh-overlay"></div>
 
       {/* Main Content */}
