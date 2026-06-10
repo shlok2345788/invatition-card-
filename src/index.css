@@ -277,6 +277,7 @@ body {
   border: none;
   box-shadow: none;
   overflow: visible;
+  touch-action: auto;
 }
 
 .scratch-canvas {
@@ -904,7 +905,7 @@ body {
 }
 
 /* Responsiveness */
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .app-container.is-revealed .main-panel {
     padding: 60px;
   }
@@ -945,7 +946,7 @@ body {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .span-cols {
     grid-column: span 2;
   }
