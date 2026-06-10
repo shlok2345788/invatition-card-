@@ -13,6 +13,23 @@ declare global {
 function App() {
   const [hasRevealed, setHasRevealed] = useState(false);
   const [isRSVPOpen, setIsRSVPOpen] = useState(false);
+  const [introState, setIntroState] = useState<'connecting' | 'granted' | 'done'>('connecting');
+
+  useEffect(() => {
+    // Cinematic Intro Sequence
+    const timer1 = setTimeout(() => {
+      setIntroState('granted');
+    }, 2000);
+    
+    const timer2 = setTimeout(() => {
+      setIntroState('done');
+    }, 3500);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    }
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -26,34 +43,10 @@ function App() {
 
   const handleReveal = () => {
     setHasRevealed(true);
-    
-    // Trigger epic confetti explosion from both sides multiple times
-    if (window.confetti) {
-      const duration = 5 * 1000;
-      const animationEnd = Date.now() + duration;
-      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
-
-      const randomInRange = (min: number, max: number) => {
-        return Math.random() * (max - min) + min;
-      };
-
-      const interval: any = setInterval(function() {
-        const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-          return clearInterval(interval);
-        }
-
-        const particleCount = 50 * (timeLeft / duration);
-        // since particles fall down, animate a bit higher than they would
-        window.confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-        window.confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-      }, 250);
-    }
   };
 
   return (
-    <div className={`app-container ${hasRevealed ? 'is-revealed' : ''}`}>
+    <div className={`app-container ${hasRevealed ? 'is-revealed' : ''} ${introState !== 'done' ? 'is-intro' : ''}`}>
       {/* Background Visuals */}
       <div 
         className="bg-image" 
@@ -65,29 +58,52 @@ function App() {
       <div className="ambient-light-2"></div>
       <div className="ambient-light-3"></div>
       <div className="ambient-light-4"></div>
-      <div className="bokeh-overlay"></div>
+      <div className="particles-overlay"></div>
 
-      {/* Main Content */}
-      <div className="content-wrapper">
-        <div className="glass-panel main-panel">
-          
-          {!hasRevealed && (
-            <div className="teaser-header">
-              <p className="scratch-instruction">
-                🎉 YOU ARE INVITED 🎉<br />
-                <span>Scratch the card to unlock the experience</span>
-              </p>
+      {/* Live Mission Status Badge */}
+      <div className="live-status-badge">
+        <span className="status-dot"></span>
+        STATUS: ACTIVE
+      </div>
+
+      {introState !== 'done' && (
+        <div className="intro-sequence">
+          {introState === 'connecting' && (
+            <div className="loading-screen">
+              <div className="scan-line-horizontal"></div>
+              <h2 className="typewriter-fast">CONNECTING TO SERVER...</h2>
             </div>
           )}
-
-          <div className="card-reveal-box">
-            <ScratchCard onReveal={handleReveal}>
-              <InvitationDetails onOpenRSVP={() => setIsRSVPOpen(true)} />
-            </ScratchCard>
-          </div>
-
+          {introState === 'granted' && (
+            <div className="access-screen">
+              <h1 className="glitch-title cyan-glow access-granted">ACCESS GRANTED</h1>
+            </div>
+          )}
         </div>
-      </div>
+      )}
+
+      {/* Main Content */}
+      {introState === 'done' && (
+        <div className="content-wrapper">
+          {!hasRevealed ? (
+            <div className="glass-panel main-panel">
+              <div className="teaser-header">
+                <h1 className="mission-alert-title">NEW MISSION DETECTED</h1>
+                <p className="mission-alert-subtext">Your presence is required.</p>
+              </div>
+
+              <div className="card-reveal-box">
+                <ScratchCard onReveal={handleReveal}>
+                  {/* Empty children before reveal, or hidden content */}
+                  <div className="hidden-mission-text">MISSION UNLOCKED</div>
+                </ScratchCard>
+              </div>
+            </div>
+          ) : (
+            <InvitationDetails onOpenRSVP={() => setIsRSVPOpen(true)} />
+          )}
+        </div>
+      )}
 
       <RSVPModal isOpen={isRSVPOpen} onClose={() => setIsRSVPOpen(false)} />
     </div>

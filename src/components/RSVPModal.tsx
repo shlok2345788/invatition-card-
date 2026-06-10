@@ -8,10 +8,9 @@ interface RSVPModalProps {
 export const RSVPModal = ({ isOpen, onClose }: RSVPModalProps) => {
   const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [guests, setGuests] = useState(1);
+  const [callsign, setCallsign] = useState('');
   const [attending, setAttending] = useState<'yes' | 'no'>('yes');
-  const [wishes, setWishes] = useState('');
+  const [squadSize, setSquadSize] = useState(1);
 
   if (!isOpen) return null;
 
@@ -19,94 +18,89 @@ export const RSVPModal = ({ isOpen, onClose }: RSVPModalProps) => {
     e.preventDefault();
     setFormState('submitting');
     
-    // Simulate API request
     setTimeout(() => {
       setFormState('success');
     }, 2000);
   };
 
-  const handleIncrementGuests = () => {
-    if (guests < 5) setGuests(prev => prev + 1);
+  const handleIncrement = () => {
+    if (squadSize < 5) setSquadSize(prev => prev + 1);
   };
 
-  const handleDecrementGuests = () => {
-    if (guests > 1) setGuests(prev => prev - 1);
+  const handleDecrement = () => {
+    if (squadSize > 1) setSquadSize(prev => prev - 1);
   };
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content glass-panel">
+      <div className="modal-content glass-panel terminal-border">
         <button className="close-btn" onClick={onClose}>&times;</button>
         
         {formState === 'idle' && (
           <form onSubmit={handleSubmit} className="rsvp-form">
             <div className="modal-header">
-              <h2 className="modal-title">RSVP to Rahul's 21st</h2>
-              <p className="modal-subtitle">Join the main event of the year</p>
+              <h2 className="modal-title glitch-text">MISSION REGISTRATION</h2>
+              <p className="modal-subtitle">Confirm your operative status</p>
             </div>
 
-            {/* Attendance Choice Cards */}
             <div className="attendance-choice">
               <div 
                 className={`choice-card yes-card ${attending === 'yes' ? 'selected' : ''}`}
                 onClick={() => setAttending('yes')}
               >
-                <span className="choice-emoji">🥂</span>
-                <span className="choice-title">HELL YES!</span>
-                <span className="choice-desc">Party of the year</span>
+                <span className="choice-icon">✓</span>
+                <span className="choice-title">ACCEPT DIRECTIVE</span>
               </div>
               <div 
                 className={`choice-card no-card ${attending === 'no' ? 'selected' : ''}`}
                 onClick={() => setAttending('no')}
               >
-                <span className="choice-emoji">😢</span>
-                <span className="choice-title">SADLY NO</span>
-                <span className="choice-desc">Will miss the fun</span>
+                <span className="choice-icon">✕</span>
+                <span className="choice-title">ABORT MISSION</span>
               </div>
             </div>
             
             <div className="input-group">
-              <label>Full Name</label>
+              <label>OPERATIVE NAME</label>
               <input 
                 type="text" 
                 required 
                 value={name} 
                 onChange={(e) => setName(e.target.value)} 
-                placeholder="Enter your name"
+                placeholder="Enter Identity..."
                 className="premium-input"
               />
             </div>
             
             <div className="input-group">
-              <label>Phone Number</label>
+              <label>CALLSIGN (OPTIONAL)</label>
               <input 
-                type="tel" 
-                required 
-                value={phone} 
-                onChange={(e) => setPhone(e.target.value)} 
-                placeholder="Enter your phone number"
+                type="text" 
+                value={callsign} 
+                onChange={(e) => setCallsign(e.target.value)} 
+                placeholder="Enter Alias..."
                 className="premium-input"
               />
             </div>
 
             {attending === 'yes' && (
               <div className="input-group guest-selector-box">
-                <label>Number of Guests (Including You)</label>
+                <label>SQUAD SIZE (INCLUDING YOU)</label>
                 <div className="guest-controls">
                   <button 
                     type="button" 
                     className="guest-btn" 
-                    onClick={handleDecrementGuests}
-                    disabled={guests <= 1}
+                    onClick={handleDecrement}
+                    disabled={squadSize <= 1}
                   >
                     -
                   </button>
-                  <span className="guest-display">{guests}</span>
+                  <span className="guest-display">{squadSize}</span>
                   <button 
                     type="button" 
                     className="guest-btn" 
-                    onClick={handleIncrementGuests}
-                    disabled={guests >= 5}
+                    onClick={handleIncrement}
+                    disabled={squadSize >= 5}
                   >
                     +
                   </button>
@@ -114,55 +108,39 @@ export const RSVPModal = ({ isOpen, onClose }: RSVPModalProps) => {
               </div>
             )}
 
-            <div className="input-group">
-              <label>Wish Rahul a Happy Birthday!</label>
-              <textarea 
-                value={wishes} 
-                onChange={(e) => setWishes(e.target.value)} 
-                placeholder="Leave a message..."
-                className="premium-textarea"
-                rows={2}
-              />
-            </div>
-
             <button type="submit" className="glow-btn btn-primary submit-btn">
-              {attending === 'yes' ? 'Secure My Invite ⚡' : 'Send Wishes 🤍'}
+              {attending === 'yes' ? 'INITIALIZE LINK ⚡' : 'TRANSMIT APOLOGY 🚫'}
             </button>
           </form>
         )}
 
         {formState === 'submitting' && (
           <div className="modal-status">
-            <div className="loader"></div>
-            <p className="loading-text">Finalizing your VIP response...</p>
+            <div className="loader-cyber"></div>
+            <p className="loading-text type-anim">ENCRYPTING RESPONSE...</p>
           </div>
         )}
 
         {formState === 'success' && (
           <div className="modal-status success-anim">
-            <div className="success-checkmark">
-              <div className="check-icon">
-                <span className="icon-line line-tip"></span>
-                <span className="icon-line line-long"></span>
-                <div className="icon-circle"></div>
-                <div className="icon-fix"></div>
-              </div>
+            <div className="success-checkmark cyber-check">
+              ✓
             </div>
             
             {attending === 'yes' ? (
               <>
-                <h2 className="success-title">You're On The List, {name}!</h2>
-                <p className="success-message">We've locked in {guests} spot{guests > 1 ? 's' : ''} for you. See you on August 15th! 🥂</p>
+                <h2 className="success-title">CREDENTIALS ACCEPTED</h2>
+                <p className="success-message">Agent {callsign || name}, your {squadSize} member squad is cleared for entry. Standby for further instructions.</p>
               </>
             ) : (
               <>
-                <h2 className="success-title">Thank You, {name}!</h2>
-                <p className="success-message">We've sent your warm wishes to Rahul. You will be missed! 🤍</p>
+                <h2 className="success-title">TRANSMISSION SENT</h2>
+                <p className="success-message">Agent {callsign || name}, we acknowledge your absence. Operation will proceed.</p>
               </>
             )}
 
             <button className="glow-btn btn-secondary close-success-btn" onClick={onClose}>
-              Done
+              CLOSE TERMINAL
             </button>
           </div>
         )}
